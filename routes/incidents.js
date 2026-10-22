@@ -16,7 +16,6 @@ function verifyAuth(req, res, next) {
   }
 }
 
-// GET all incidents
 router.get('/', verifyAuth, (req, res) => {
   db.all(`SELECT * FROM incidents ORDER BY id DESC`, [], (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
@@ -24,7 +23,6 @@ router.get('/', verifyAuth, (req, res) => {
   });
 });
 
-// POST new incident
 router.post('/', verifyAuth, (req, res) => {
   const { title, description, service, severity, priority, assignee, reporter, environment, impact, sla_hours } = req.body;
   if (!title || !description || !impact || !reporter) {
@@ -41,7 +39,6 @@ router.post('/', verifyAuth, (req, res) => {
     });
 });
 
-// PATCH update incident
 router.patch('/:id', verifyAuth, (req, res) => {
   const { status, severity, assignee } = req.body;
   const fields = [];
@@ -60,7 +57,6 @@ router.patch('/:id', verifyAuth, (req, res) => {
   });
 });
 
-// DELETE incident
 router.delete('/:id', verifyAuth, (req, res) => {
   db.run(`DELETE FROM incidents WHERE id = ?`, [req.params.id], function (err) {
     if (err) return res.status(500).json({ error: err.message });
