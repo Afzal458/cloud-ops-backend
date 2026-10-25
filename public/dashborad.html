@@ -25,17 +25,24 @@ h2{font-size:21px;font-weight:700;letter-spacing:-.025em;margin:0 0 4px}
 h3{font-size:16px;font-weight:700;margin:16px 0 8px}
 .muted{color:var(--muted)}
 .panel{background:white;border:1px solid var(--line);border-radius:15px;box-shadow:0 4px 22px #12334b09}
-.stats,.services{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px}
+.stats,.services{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}
 .stat{padding:16px;}
 .stat strong{display:block;font-size:26px;margin:6px 0;letter-spacing:-.04em}
 .stat p{margin:0;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .stat small{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+.two{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(260px,1fr);gap:15px}
+.gap-section{margin-top:20px}
 .view{display:none}
 .view.active{display:block}
+.control{border:1px solid #cbd9e2;border-radius:9px;padding:9px 11px;background:white;color:var(--ink);min-height:40px;max-width:100%;width:100%}
+textarea.control{min-height:82px;resize:vertical}
 .btn{border:0;border-radius:9px;padding:9px 13px;background:var(--blue);color:white;font-weight:700;min-height:40px;transition:0.2s}
 .btn:hover{filter:brightness(.9)}
+.btn.secondary{background:#eaf3f6;color:#16485d}
 .btn.danger{background:#a63738}
 .btn.tiny{min-height:31px;padding:5px 9px;font-size:12px}
+.toolbar{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin-bottom:15px;}
+.field{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:700;min-width:130px}
 .table-wrap{overflow-x:auto}
 .data-table{border-collapse:collapse;width:100%;min-width:900px;text-align:left}
 .data-table td,.data-table th{padding:10px 12px;border-bottom:1px solid #eaf0f3;font-size:12px;vertical-align:top}
@@ -50,6 +57,12 @@ h3{font-size:16px;font-weight:700;margin:16px 0 8px}
 .hero-card{background:linear-gradient(135deg,#102b3d 0%,#16485d 100%);color:#e2eff3;border-radius:16px;padding:26px;margin-bottom:20px}
 .hero-card h1{color:white;margin:0 0 8px;font-size:26px}
 .hero-card p{color:#b8d4e1;margin:0;font-size:14px;line-height:1.6;max-width:720px}
+.overlay{position:fixed;inset:0;background:#0c263bad;z-index:30;display:none;align-items:center;justify-content:center;padding:16px}
+.overlay.active{display:flex}
+.dialog{background:white;border-radius:16px;padding:24px;width:min(100%,600px);max-height:90%;overflow:auto}
+.toast{position:fixed;bottom:20px;right:20px;background:#12364a;color:white;border-radius:11px;padding:13px 17px;z-index:50;max-width:min(420px,calc(100% - 32px));display:none;font-size:13px}
+.toast.show{display:block}
+.stat-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
 </style>
 </head>
 <body>
@@ -79,33 +92,30 @@ h3{font-size:16px;font-weight:700;margin:16px 0 8px}
 <section id="overview" class="view active">
 <div class="hero-card">
 <h1>Cloud Operations Center</h1>
-<p>A web-based dashboard for incident management, monitoring and cost optimization in cloud environments. All data is backed by a real SQLite database.</p>
+<p>A sample cloud operations dashboard for MBA (IT) — Cloud Computing specialization. Tracks incidents, monitors service health, optimizes cost, provisions VM/container resources, audits security, manages SLA, and exports operational reports.</p>
 </div>
 <div id="overview-summary" class="stats"></div>
-<div class="panel" style="padding:20px; margin-top:20px;">
-<h2>Deployment architecture</h2>
-<div style="background:#f5f9fa; border:1px solid #dce6ec; border-radius:10px; padding:12px; margin-top:10px;">
-<svg viewBox="0 0 420 300" style="width:100%;height:auto;display:block;">
-<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#566d7e"/></marker></defs>
-<rect x="20" y="20" width="90" height="44" rx="7" fill="#d9f3ef" stroke="#087f78"/><text x="65" y="47" text-anchor="middle" font-size="11" font-family="DM Sans" fill="#075c56">Browser</text>
-<rect x="160" y="20" width="100" height="44" rx="7" fill="#eaf3f6" stroke="#225f9b"/><text x="210" y="47" text-anchor="middle" font-size="11" font-family="DM Sans" fill="#16485d">Load balancer</text>
-<rect x="160" y="110" width="100" height="44" rx="7" fill="#eaf3f6" stroke="#225f9b"/><text x="210" y="137" text-anchor="middle" font-size="11" font-family="DM Sans" fill="#16485d">App VM</text>
-<rect x="300" y="110" width="100" height="44" rx="7" fill="#eaf3f6" stroke="#225f9b"/><text x="350" y="137" text-anchor="middle" font-size="11" font-family="DM Sans" fill="#16485d">Database</text>
-<line x1="110" y1="42" x2="160" y2="42" stroke="#566d7e" stroke-width="1.5" marker-end="url(#arr)"/>
-<line x1="210" y1="64" x2="210" y2="110" stroke="#566d7e" stroke-width="1.5" marker-end="url(#arr)"/>
-<line x1="260" y1="132" x2="300" y2="132" stroke="#566d7e" stroke-width="1.5" marker-end="url(#arr)"/>
-</svg>
-</div>
+<div class="panel gap-section" style="padding:20px;">
+<h2>Cloud providers (Chapter 4.1)</h2>
+<table class="data-table" style="min-width:100%; margin-top:10px;">
+<thead><tr><th>Provider</th><th>Core strength</th><th>Typical use</th><th>Marker</th></tr></thead>
+<tbody>
+<tr><td><strong>AWS</strong></td><td>Broadest service catalog</td><td>Enterprise workloads</td><td><span class="badge Low">Preferred</span></td></tr>
+<tr><td><strong>Azure</strong></td><td>Microsoft integration</td><td>Hybrid cloud</td><td><span class="badge Low">Supported</span></td></tr>
+<tr><td><strong>GCP</strong></td><td>Data, ML and Kubernetes</td><td>Analytics-heavy</td><td><span class="badge Low">Supported</span></td></tr>
+</tbody>
+</table>
 </div>
 </section>
 
 <!-- INCIDENTS -->
 <section id="incidents" class="view">
+<h2>Incident Management</h2>
+<div class="panel" style="padding:20px; margin-top:15px;">
 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-<h2 style="margin:0;">Incident Management</h2>
-<!-- Button to create is hidden for now to prevent errors, backend works -->
+<h3 style="margin:0;">Incident Queue</h3>
+<button class="btn" onclick="openModal()">+ Create Incident</button>
 </div>
-<div class="panel" style="padding:20px;">
 <div class="table-wrap">
 <table class="data-table">
 <thead><tr><th>ID</th><th>Title</th><th>Service</th><th>Severity</th><th>Status</th><th>Assignee</th><th>Actions</th></tr></thead>
@@ -128,21 +138,62 @@ h3{font-size:16px;font-weight:700;margin:16px 0 8px}
 </div>
 </section>
 
+<!-- ARCHITECTURE -->
+<section id="architecture" class="view">
+<h2>Architecture &amp; Diagrams</h2>
+<div class="panel" style="padding:20px; margin-top:15px;">
+<h3>Deployment architecture (Chapter 6.4)</h3>
+<div style="background:#f5f9fa; border:1px solid #dce6ec; border-radius:10px; padding:12px; margin-top:10px;">
+<svg viewBox="0 0 420 300" style="width:100%;height:auto;display:block;">
+<defs><marker id="arr" markerWidth="8" markerHeight="8" refX="8" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#566d7e"/></marker></defs>
+<rect x="20" y="20" width="90" height="44" rx="7" fill="#d9f3ef" stroke="#087f78"/><text x="65" y="47" text-anchor="middle" font-size="11" font-family="DM Sans" fill="#075c56">Browser</text>
+<rect x="160" y="20" width="100" height="44" rx="7" fill="#eaf3f6" stroke="#225f9b"/><text x="210" y="47" text-anchor="middle" font-size="11" font-family="DM Sans" fill="#16485d">Load balancer</text>
+<rect x="160" y="110" width="100" height="44" rx="7" fill="#eaf3f6" stroke="#225f9b"/><text x="210" y="137" text-anchor="middle" font-size="11" font-family="DM Sans" fill="#16485d">App VM</text>
+<rect x="300" y="110" width="100" height="44" rx="7" fill="#eaf3f6" stroke="#225f9b"/><text x="350" y="137" text-anchor="middle" font-size="11" font-family="DM Sans" fill="#16485d">Database</text>
+<line x1="110" y1="42" x2="160" y2="42" stroke="#566d7e" stroke-width="1.5" marker-end="url(#arr)"/>
+<line x1="210" y1="64" x2="210" y2="110" stroke="#566d7e" stroke-width="1.5" marker-end="url(#arr)"/>
+<line x1="260" y1="132" x2="300" y2="132" stroke="#566d7e" stroke-width="1.5" marker-end="url(#arr)"/>
+</svg>
+</div>
+</div>
+</section>
+
 <!-- OTHER PLACEHOLDERS -->
-<section id="architecture" class="view"><h2>Architecture &amp; Diagrams</h2><div class="panel" style="padding:20px; margin-top:15px;"><p>System connects Browser -> Node.js API -> SQLite Database.</p></div></section>
-<section id="provisioning" class="view"><h2>Provisioning</h2><div class="panel" style="padding:20px; margin-top:15px;"><p>Module coming soon.</p></div></section>
-<section id="cost" class="view"><h2>Cost Optimizer</h2><div class="panel" style="padding:20px; margin-top:15px;"><p>Module coming soon.</p></div></section>
-<section id="security" class="view"><h2>Security &amp; Compliance</h2><div class="panel" style="padding:20px; margin-top:15px;"><p>Module coming soon.</p></div></section>
-<section id="support" class="view"><h2>Support &amp; SLA</h2><div class="panel" style="padding:20px; margin-top:15px;"><p>Module coming soon.</p></div></section>
+<section id="provisioning" class="view"><h2>Provisioning</h2><div class="panel" style="padding:20px; margin-top:15px;"><p>Module coming soon to the backend.</p></div></section>
+<section id="cost" class="view"><h2>Cost Optimizer</h2><div class="panel" style="padding:20px; margin-top:15px;"><p>Module coming soon to the backend.</p></div></section>
+<section id="security" class="view"><h2>Security &amp; Compliance</h2><div class="panel" style="padding:20px; margin-top:15px;"><p>Module coming soon to the backend.</p></div></section>
+<section id="support" class="view"><h2>Support &amp; SLA</h2><div class="panel" style="padding:20px; margin-top:15px;"><p>Module coming soon to the backend.</p></div></section>
 
 </main>
 </div>
+
+<!-- MODAL -->
+<div id="incident-modal" class="overlay">
+<div class="dialog">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
+<h2>Create Incident</h2>
+<button class="btn secondary" onclick="closeModal()">Close</button>
+</div>
+<form id="incident-form">
+<label class="field">Title *<input type="text" id="title" class="control" required></label>
+<label class="field" style="margin-top:10px;">Description *<textarea id="description" class="control" required></textarea></label>
+<div class="stat-grid-2" style="margin-top:10px;">
+<label class="field">Service *<select id="service" class="control"><option>Compute</option><option>Storage</option><option>Database</option><option>Network</option><option>API Gateway</option><option>Kubernetes</option></select></label>
+<label class="field">Severity *<select id="severity" class="control"><option>Critical</option><option>High</option><option>Medium</option><option>Low</option></select></label>
+</div>
+<label class="field" style="margin-top:10px;">Customer Impact *<input type="text" id="impact" class="control" required></label>
+<button class="btn" style="width:100%; margin-top:20px;" type="submit" id="submit-btn">Save to Database</button>
+</form>
+</div>
+</div>
+<div id="toast" class="toast"></div>
 
 <script>
 const token = localStorage.getItem('token');
 if (!token) window.location.href = '/';
 
 function logout() { localStorage.clear(); window.location.href = '/'; }
+function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }
 
 // Tab Switching Logic
 document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -187,14 +238,44 @@ async function loadIncidents() {
     } catch (err) { console.error("Error loading data:", err); }
 }
 
+// Create Incident
+document.getElementById('incident-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('submit-btn');
+    btn.textContent = 'Saving...';
+    try {
+        await fetch('/api/incidents', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify({
+                title: document.getElementById('title').value,
+                description: document.getElementById('description').value,
+                service: document.getElementById('service').value,
+                severity: document.getElementById('severity').value,
+                impact: document.getElementById('impact').value,
+                reporter: localStorage.getItem('userName') || 'User',
+                priority: 'P3', environment: 'Production', sla_hours: 24
+            })
+        });
+        document.getElementById('incident-form').reset();
+        closeModal();
+        loadIncidents();
+        btn.textContent = 'Save to Database';
+        showToast('Incident saved to database!');
+    } catch (err) { alert('Failed'); btn.textContent = 'Save'; }
+});
+
 // Delete Incident
 async function deleteIncident(id) {
-    if(!confirm('Delete this from the live database?')) return;
+    if(!confirm('Delete from database?')) return;
     await fetch(`/api/incidents/${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
     loadIncidents();
 }
 
-// Service Health Cards
+function openModal() { document.getElementById('incident-modal').classList.add('active'); }
+function closeModal() { document.getElementById('incident-modal').classList.remove('active'); }
+
+// Service Health Fake Cards
 document.getElementById('service-health').innerHTML = ['Compute','Storage','Database','Network','API Gateway','Kubernetes'].map(s => `
     <div class="panel stat"><h3>${s}</h3><p class="muted">Current · Healthy</p></div>
 `).join('');
@@ -209,7 +290,7 @@ new Chart(document.getElementById('metric-chart'), {
     options: { responsive: true, maintainAspectRatio: false }
 });
 
-// Load on Start
+// Load Data
 loadIncidents();
 </script>
 </body>
